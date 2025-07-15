@@ -41,7 +41,7 @@ function SignupPage() {
 
   try {
     const response = await axios.post(
-      "http://localhost:4000/api/v1/user/patient/register",
+      "https://backend-medilink-2.onrender.com/user/patient/register",
       formData,
       {
         withCredentials: true, // 👈 essentiel pour les cookies (token, sessions)
