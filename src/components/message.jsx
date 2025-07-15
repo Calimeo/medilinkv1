@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import { FaPaperPlane, FaUserCircle } from "react-icons/fa";
 import axios from "axios";
 
-const socket = io("http://localhost:4000", { withCredentials: true });
+const socket = io("https://backend-medilink-2.onrender.com", { withCredentials: true });
 
 const ChatPage = () => {
   const [doctors, setDoctors] = useState([]);
