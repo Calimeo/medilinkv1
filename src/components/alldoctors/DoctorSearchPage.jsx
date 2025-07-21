@@ -3,12 +3,14 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { FaUserPlus, FaUserMinus, FaEnvelope } from "react-icons/fa";
 import ChatModal from "../ChatModal.jsx"; // adapte ce chemin si besoin
-
+ import API from "@/axios/axios";
 const DoctorSearchPage = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [chatDoctor, setChatDoctor] = useState(null);
+
+  
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -16,8 +18,8 @@ const DoctorSearchPage = () => {
 
     setLoading(true);
     try {
-      const { data } = await axios.get(
-        `http://localhost:4000/api/v1/user/search?query=${query}`,
+      const { data } = await API.get(
+        `/api/v1/user/search?query=${query}`,
         { withCredentials: true }
       );
       const updated = data.doctors.map((doc) => ({ ...doc, followed: false }));
@@ -32,10 +34,10 @@ const DoctorSearchPage = () => {
   const toggleFollow = async (doctorId, isFollowed, index) => {
     try {
       const url = isFollowed
-        ? `http://localhost:4000/api/v1/user/unfollow/${doctorId}`
-        : `http://localhost:4000/api/v1/user/follow/${doctorId}`;
+        ? `/api/v1/user/unfollow/${doctorId}`
+        : `/api/v1/user/follow/${doctorId}`;
 
-      const { data } = await axios.put(url, {}, { withCredentials: true });
+      const { data } = await API.put(url, {}, { withCredentials: true });
 
       toast.success(data.message);
 

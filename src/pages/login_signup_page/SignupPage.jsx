@@ -7,6 +7,7 @@ import { Helmet } from "react-helmet";
 import Lottie from "react-lottie";
 import animationData from "../../lottie-animation/loginAnimation.json"; // Replace with your Lottie animation file
 
+import API from "@/axios/axios"; 
 function SignupPage() {
   const [strength, setStrength] = useState(0);
   const [formData, setFormData] = useState({
@@ -40,8 +41,8 @@ function SignupPage() {
   }
 
   try {
-    const response = await axios.post(
-      "http://localhost:4000/api/v1/user/patient/register",
+    const response = await API.post(
+      "/api/v1/user/patient/register",
       formData,
       {
         withCredentials: true, // 👈 essentiel pour les cookies (token, sessions)

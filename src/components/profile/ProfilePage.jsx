@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+import API from "@/axios/axios"; 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
   const token = localStorage.getItem("token");
 
-  axios
-    .get("http://localhost:4000/api/v1/user/patient/me", {
+  API
+    .get("/api/v1/user/patient/me", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

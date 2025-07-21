@@ -21,7 +21,6 @@ import {
   Appointment,
   CartPage,
   ProductsByCategory,
-  SingleMedicine,
   GoToTop,
   Bot,
   ProfilePage,
@@ -52,7 +51,6 @@ const AppWrapper = () => {
         <Route path="/specialities" element={<SpecialitiesPage />} />
         <Route path="/medicines" element={<MedicinesPage />} />
         <Route path="/medicines/shop_by_category/:id" element={<ProductsByCategory />} />
-        <Route path="/buy-medicines/:id" element={<SingleMedicine />} />
         <Route path="/medicines/cart" element={<CartPage />} />
         <Route path="/medicines/order_history" element={<MyPurchasesPage />} />
         <Route path="/login" element={<LoginPage />} />

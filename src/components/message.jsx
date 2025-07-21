@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import io from "socket.io-client";
 import { FaPaperPlane, FaUserCircle } from "react-icons/fa";
-import axios from "axios";
-
-const socket = io("http://localhost:4000", { withCredentials: true });
+import API from "@/axios/axios"; 
+import socket from "@/axios/socket"; 
 
 const ChatPage = () => {
   const [doctors, setDoctors] = useState([]);
@@ -17,9 +15,7 @@ const ChatPage = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const { data } = await axios.get("http://localhost:4000/api/v1/user/doctors", {
-          withCredentials: true,
-        });
+        const { data } = await API.get("/api/v1/user/doctors");
         setDoctors(data.users.filter((u) => u._id !== currentUserId));
       } catch (err) {
         console.error("Erreur chargement médecins", err);
@@ -40,10 +36,7 @@ const ChatPage = () => {
 
   const fetchMessages = async (doctorId) => {
     try {
-      const { data } = await axios.get(
-        `http://localhost:4000/api/v1/message/${doctorId}`,
-        { withCredentials: true }
-      );
+      const { data } = await API.get(`/api/v1/message/${doctorId}`);
       setMessages(data.messages);
     } catch (err) {
       console.error("Erreur chargement messages", err);
@@ -58,7 +51,10 @@ const ChatPage = () => {
     };
 
     socket.emit("sendMessage", msg);
-    setMessages((prev) => [...prev, { ...msg, from: currentUserId, createdAt: new Date() }]);
+    setMessages((prev) => [
+      ...prev,
+      { ...msg, from: currentUserId, createdAt: new Date() },
+    ]);
     setInput("");
   };
 
@@ -106,7 +102,9 @@ const ChatPage = () => {
                   <div
                     key={i}
                     className={`flex ${
-                      msg.from === currentUserId ? "justify-end" : "justify-start"
+                      msg.from === currentUserId
+                        ? "justify-end"
+                        : "justify-start"
                     }`}
                   >
                     <div
@@ -124,7 +122,9 @@ const ChatPage = () => {
               </div>
             </>
           ) : (
-            <p className="text-gray-600">Sélectionnez un médecin pour commencer une discussion.</p>
+            <p className="text-gray-600">
+              Sélectionnez un médecin pour commencer une discussion.
+            </p>
           )}
         </div>
 

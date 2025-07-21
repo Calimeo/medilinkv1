@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { DoctorsCard } from "../../import-export/ImportExport";
 import axios from "axios";
 
+import API from "@/axios/axios"; 
+
 function AllDoctorsPage() {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,8 +12,8 @@ function AllDoctorsPage() {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const { data } = await axios.get(
-          "http://localhost:4000/api/v1/user/doctors",
+        const { data } = await API.get(
+          "/api/v1/user/doctors",
           { withCredentials: true }
         );
 

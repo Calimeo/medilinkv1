@@ -8,13 +8,14 @@ import {
   XCircle,
 } from "lucide-react";
 
+import API from "@/axios/axios.js";
 const PatientAppointmentsPage = () => {
   const [appointments, setAppointments] = useState([]);
   const [selected, setSelected] = useState(null);
 
   const fetchAppointments = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/v1/appoitment/patient", {
+      const res = await API.get("/api/v1/appoitment/patient", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -28,7 +29,7 @@ const PatientAppointmentsPage = () => {
   const cancelAppointment = async (id) => {
     if (!window.confirm("Annuler ce rendez-vous ?")) return;
     try {
-      await axios.delete(`http://localhost:4000/api/v1/appoitment/${id}`, {
+      await API.delete(`/api/v1/appoitment/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

@@ -2,9 +2,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaTimes, FaPaperPlane } from "react-icons/fa";
 import axios from "axios";
-import { io } from "socket.io-client";
+import socket from "@/axios/socket"; // ⚠️ importe l'instance centralisée
 
-const socket = io("http://localhost:4000", { withCredentials: true });
+import API from "@/axios/axios";
 
 const ChatModal = ({ doctor, onClose }) => {
   const [messages, setMessages] = useState([]);
@@ -15,17 +15,16 @@ const ChatModal = ({ doctor, onClose }) => {
   useEffect(() => {
     if (!doctor) return;
 
+    socket.connect(); // Connexion manuelle si autoConnect: false
     socket.emit("join", doctor._id);
 
-    axios
-      .get(`http://localhost:4000/api/v1/message/${doctor._id}`, {
+    API
+      .get(`/api/v1/message/${doctor._id}`, {
         withCredentials: true,
       })
       .then((res) => setMessages(res.data.messages))
       .catch(console.error);
-  }, [doctor]);
 
-  useEffect(() => {
     socket.on("receiveMessage", (message) => {
       if (
         message.sender._id === doctor._id ||
@@ -35,15 +34,18 @@ const ChatModal = ({ doctor, onClose }) => {
       }
     });
 
-    return () => socket.off("receiveMessage");
+    return () => {
+      socket.off("receiveMessage");
+      socket.disconnect(); // Déconnexion quand on ferme le chat
+    };
   }, [doctor]);
 
   const handleSend = async () => {
     if (!content.trim()) return;
 
     try {
-      const { data } = await axios.post(
-        "http://localhost:4000/api/v1/send",
+      const { data } = await API.post(
+        "/api/v1/send",
         { receiverId: doctor._id, content },
         { withCredentials: true }
       );

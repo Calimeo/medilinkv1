@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
+import API from "@/axios/axios.js";
 const AppointmentLocation = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -27,8 +28,8 @@ const AppointmentLocation = () => {
     const fetchDoctors = async () => {
       try {
         const token = localStorage.getItem("token");
-        const { data } = await axios.get(
-          "http://localhost:4000/api/v1/user/doctors",
+        const { data } = await API.get(
+          "/api/v1/user/doctors",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -55,8 +56,8 @@ const AppointmentLocation = () => {
     }
 
     try {
-      const { data } = await axios.post(
-        "http://localhost:4000/api/v1/appoitment/post",
+      const { data } = await API.post(
+        "/api/v1/appoitment/post",
         {
           firstName,
           lastName,

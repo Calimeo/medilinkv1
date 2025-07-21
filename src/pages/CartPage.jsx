@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+import API from "@/axios/axios"; 
 const CartPage = () => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -56,8 +57,8 @@ const CartPage = () => {
     try {
       // Envoi des achats un par un
       for (const item of cart) {
-        await axios.post(
-          "http://localhost:4000/api/v1/buy",
+        await API.post(
+          "/api/v1/buy",
           {
             productId: item._id,
             quantity: item.quantity,

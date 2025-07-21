@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+import API from "@/axios/axios"; 
 const PharmacyStorePage = () => {
   const [products, setProducts] = useState([]);
   const [selectedType, setSelectedType] = useState("all");
@@ -26,7 +27,7 @@ const PharmacyStorePage = () => {
   const fetchProducts = async () => {
     try {
       const token = localStorage.getItem("token");
-      const { data } = await axios.get("http://localhost:4000/api/v1/products/p", {
+      const { data } = await API.get("/api/v1/products/p", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+import API from "@/axios/axios"; 
+
 const FollowedDoctorsPage = () => {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchFollowedDoctors = async () => {
     try {
-      const { data } = await axios.get(
-        "http://localhost:4000/api/v1/user/following",
+      const { data } = await API.get(
+        "/api/v1/user/following",
         { withCredentials: true }
       );
       setDoctors(data.doctors || []);

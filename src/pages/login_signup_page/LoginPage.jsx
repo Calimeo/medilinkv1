@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Lottie from "react-lottie";
 import animationData from "../../lottie-animation/loginAnimation.json";
+import API from "@/axios/axios.js";
+
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -34,8 +35,8 @@ function LoginPage() {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/v1/user/login",
+      const response = await API.post(
+        "/api/v1/user/login",
         {
           email,
           password,
