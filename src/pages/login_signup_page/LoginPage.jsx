@@ -6,14 +6,12 @@ import Lottie from "react-lottie";
 import animationData from "../../lottie-animation/loginAnimation.json";
 import API from "@/axios/axios.js";
 
-
 function LoginPage() {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    confirmPassword: "", // ✅ champ ajouté
+    confirmPassword: "",
   });
 
   const handleInputChange = (e) => {
@@ -26,7 +24,6 @@ function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Login button clicked");
     const { email, password, confirmPassword } = formData;
 
     if (password !== confirmPassword) {
@@ -37,15 +34,10 @@ function LoginPage() {
     try {
       const response = await API.post(
         "/api/v1/user/login",
-        {
-          email,
-          password,
-          confirmPassword,
-          role :"Patient",
-        },
+        { email, password, confirmPassword, role: "Patient" },
         { withCredentials: true }
       );
-      console.log("Response:", response.data);
+
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
         toast.success("Login successful");
@@ -54,10 +46,7 @@ function LoginPage() {
         toast.error("Login failed");
       }
     } catch (error) {
-      console.error("Error logging in:", error);
-      toast.error(
-        error.response?.data?.message || "Login failed. Please try again."
-      );
+      toast.error(error.response?.data?.message || "Login failed.");
     }
   };
 
@@ -71,78 +60,73 @@ function LoginPage() {
   };
 
   return (
-    <div
-      className="flex h-screen"
-      style={{ backgroundColor: "rgb(179, 218, 217)" }}
-    >
-      <div className="w-1/2 flex justify-center items-center">
-        <Lottie options={defaultOptions} height={400} width={400} />
+    <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-gradient-to-tr from-teal-100 to-teal-300 p-4">
+      {/* Animation */}
+      <div className="w-full md:w-1/2 flex justify-center mb-8 md:mb-0">
+        <Lottie options={defaultOptions} height={300} width={300} />
       </div>
 
-      <div className="w-1/2 flex flex-col justify-center items-center bg-white shadow-lg p-8">
-        <div className="w-full max-w-md">
-          <h1 className="text-3xl font-bold text-center mb-6">Welcome </h1>
-          <h2 className="text-2xl text-center mb-6">Login to your account</h2>
-          <form className="flex flex-col" id="login-form" onSubmit={handleLogin}>
-            <label htmlFor="email" className="mb-2">Email:</label>
+      {/* Form */}
+      <div className="w-full md:w-1/2 max-w-md bg-white rounded-2xl shadow-2xl p-8">
+        <h1 className="text-2xl font-bold text-center text-gray-800 mb-2">
+          Welcome 👋
+        </h1>
+        <p className="text-center text-gray-500 mb-6">Login to your account</p>
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label htmlFor="email" className="block text-sm text-gray-600 mb-1">Email</label>
             <input
+              id="email"
               type="email"
               name="email"
-              placeholder="Email"
               value={formData.email}
               onChange={handleInputChange}
-              id="email"
+              placeholder="you@example.com"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
               required
-              className="border border-gray-300 rounded-md mb-4 p-2"
             />
+          </div>
 
-            <label htmlFor="password" className="mb-2">Password:</label>
+          <div>
+            <label htmlFor="password" className="block text-sm text-gray-600 mb-1">Password</label>
             <input
+              id="password"
               type="password"
               name="password"
-              placeholder="Password"
               value={formData.password}
               onChange={handleInputChange}
-              id="password"
+              placeholder="Enter your password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
               required
-              className="border border-gray-300 rounded-md mb-4 p-2"
             />
+          </div>
 
-            {/* ✅ Champ confirmation mot de passe */}
-            <label htmlFor="confirmPassword" className="mb-2">Confirm Password:</label>
+          <div>
+            <label htmlFor="confirmPassword" className="block text-sm text-gray-600 mb-1">Confirm Password</label>
             <input
+              id="confirmPassword"
               type="password"
               name="confirmPassword"
-              placeholder="Confirm Password"
               value={formData.confirmPassword}
               onChange={handleInputChange}
-              id="confirmPassword"
+              placeholder="Confirm your password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
               required
-              className="border border-gray-300 rounded-md mb-4 p-2"
             />
-
-            <button
-              className="bg-main_theme text-white font-bold py-2 px-4 rounded-md mb-4"
-            >
-              Login
-            </button>
-          </form>
-          <div className="flex justify-between text-sm md:text-lg">
-            <Link
-              to="/signup"
-              className="text-purple-600 hover:underline"
-              style={{ color: "rgb(27, 120, 120)" }}
-            >
-              Create Account
-            </Link>
-            <Link
-              to="/"
-              className="text-purple-600 hover:underline"
-              style={{ color: "rgb(27, 120, 120)" }}
-            >
-              Forgot Password?
-            </Link>
           </div>
+
+          <button
+            type="submit"
+            className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 rounded-lg transition duration-300"
+          >
+            Login
+          </button>
+        </form>
+
+        <div className="flex justify-between text-sm mt-6 text-teal-700">
+          <Link to="/signup" className="hover:underline">Create Account</Link>
+          <Link to="/" className="hover:underline">Forgot Password?</Link>
         </div>
       </div>
     </div>
