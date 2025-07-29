@@ -164,8 +164,10 @@ const AppointmentLocation = () => {
           >
             <option value="">Select Doctor</option>
             {(doctors || [])
-              .filter((doc) => doc?.doctorDepartment === department)
-              .map((doc, i) => (
+              .filter((doc) =>
+  doc?.doctorDepartment?.trim().toLowerCase() === department.trim().toLowerCase()
+)
+            .map((doc, i) => (
                 <option key={i} value={`${doc.firstName} ${doc.lastName}`}>
                   {doc.firstName} {doc.lastName}
                 </option>
