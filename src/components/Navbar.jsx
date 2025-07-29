@@ -20,7 +20,6 @@ function Navbar() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
-
   const navigate = useNavigate();
 
   const navItems = [
@@ -58,55 +57,56 @@ function Navbar() {
     navigate("/");
   };
 
-  // 🔄 Met à jour dynamiquement le nombre d'articles dans le panier
   useEffect(() => {
     const updateCartCount = () => {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
       setCartCount(cart.length);
     };
-
     updateCartCount();
-
-    // Écoute le changement du localStorage (utile si d'autres pages modifient le panier)
     window.addEventListener("storage", updateCartCount);
     return () => window.removeEventListener("storage", updateCartCount);
   }, []);
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
-        <NavLink to="/homepage">
-          <h1 className="text-2xl md:text-3xl font-bold text-cyan-700">MediLink</h1>
+      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+        {/* Logo */}
+        <NavLink to="/homepage" className="text-2xl font-bold text-cyan-700">
+          MediLink
         </NavLink>
 
-        <ul className="hidden lg:flex items-center space-x-6">
-          {navItems.map((item, index) => (
-            <li key={index}>
+        {/* Desktop Nav */}
+        <ul className="hidden lg:flex items-center gap-6">
+          {navItems.map((item) => (
+            <li key={item.to}>
               <NavLink to={item.to} className={navLinkClass}>
                 {item.label}
               </NavLink>
             </li>
           ))}
 
-          <li
-            className="relative"
-            onMouseEnter={() => setDropdownOpen(true)}
-            onMouseLeave={() => setDropdownOpen(false)}
-          >
-            <div
-              className="cursor-pointer flex items-center gap-2 border border-cyan-600 px-3 py-1 rounded text-cyan-600"
+          {/* Dropdown */}
+          <li className="relative">
+            <button
+              onMouseEnter={() => setDropdownOpen(true)}
+              onMouseLeave={() => setDropdownOpen(false)}
               onClick={() => {
                 if (!isAuthenticated) navigate("/login");
               }}
+              className="flex items-center gap-2 px-3 py-1 border border-cyan-600 rounded text-cyan-600 hover:bg-cyan-50 transition"
             >
               <FaUserCircle />
               <span>Menu</span>
-            </div>
+            </button>
+
             {isAuthenticated && isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-60 bg-white border shadow-lg rounded z-40">
-                {dropdownMenus.map((menu, idx) => (
+              <div
+                onMouseLeave={() => setDropdownOpen(false)}
+                className="absolute right-0 mt-2 w-60 bg-white border shadow-lg rounded z-50"
+              >
+                {dropdownMenus.map((menu) => (
                   <div
-                    key={idx}
+                    key={menu.label}
                     onClick={() => {
                       if (menu.label === "Déconnexion") handleLogOut();
                       else navigate(menu.to);
@@ -122,22 +122,25 @@ function Navbar() {
           </li>
         </ul>
 
-        <div className="hidden lg:flex items-center gap-4 relative">
-          <div onClick={handleNavigation} className="cursor-pointer relative">
-            <IoCartOutline className="text-cyan-700 text-2xl" />
+        {/* Cart + Social (Desktop) */}
+        <div className="hidden lg:flex items-center gap-4">
+          <div className="relative cursor-pointer" onClick={handleNavigation}>
+            <IoCartOutline className="text-2xl text-cyan-700" />
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
                 {cartCount}
               </span>
             )}
           </div>
+
           {socialLinks.map((link, idx) => (
-            <a key={idx} href={link.to} target="_blank" rel="noopener noreferrer">
+            <a key={idx} href={link.to} target="_blank" rel="noreferrer">
               <link.icon className="text-gray-600 hover:text-cyan-600 transition" />
             </a>
           ))}
         </div>
 
+        {/* Mobile toggle */}
         <button
           onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
           className="lg:hidden text-cyan-700"
@@ -146,23 +149,24 @@ function Navbar() {
         </button>
       </div>
 
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-white shadow-md px-4 py-4 space-y-4">
-          {navItems.map((item, index) => (
+        <div className="lg:hidden bg-white border-t px-4 py-4 space-y-3">
+          {navItems.map((item) => (
             <NavLink
-              key={index}
+              key={item.to}
               to={item.to}
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-gray-700 py-1 border-b"
+              className="block text-gray-700 py-2 border-b"
             >
               {item.label}
             </NavLink>
           ))}
 
-          <div className="mt-2">
-            {dropdownMenus.map((menu, idx) => (
+          {isAuthenticated &&
+            dropdownMenus.map((menu) => (
               <div
-                key={idx}
+                key={menu.label}
                 onClick={() => {
                   setMobileMenuOpen(false);
                   if (menu.label === "Déconnexion") handleLogOut();
@@ -174,6 +178,25 @@ function Navbar() {
                 {menu.label}
               </div>
             ))}
+
+          <div className="flex items-center justify-between pt-4 border-t">
+            <div
+              onClick={handleNavigation}
+              className="flex items-center gap-1 cursor-pointer"
+            >
+              <IoCartOutline className="text-cyan-700 text-xl" />
+              {cartCount > 0 && (
+                <span className="text-sm text-red-600">({cartCount})</span>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              {socialLinks.map((link, idx) => (
+                <a key={idx} href={link.to} target="_blank" rel="noreferrer">
+                  <link.icon className="text-gray-600 hover:text-cyan-600 text-lg" />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -182,3 +205,4 @@ function Navbar() {
 }
 
 export default Navbar;
+
